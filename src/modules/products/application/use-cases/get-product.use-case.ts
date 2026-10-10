@@ -12,7 +12,7 @@ export class GetProductUseCase {
     async execute(id: string): Promise<ProductPrimitives> {
         const product = await this.products.findById(id);
         if (!product) {
-            throw new ProductNotFoundError(`The product with id ${id} does not exist.`);
+            throw new ProductNotFoundError(id);
         }
 
         return product.toPrimitives();
