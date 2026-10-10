@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query } from "@nestjs/common";
-import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { CreateProductUseCase } from "../../application/use-cases/create-product.use-case.js";
 import { ListProductsUseCase } from "../../application/use-cases/list-products.use-case.js";
 import { GetProductUseCase } from "../../application/use-cases/get-product.use-case.js";
