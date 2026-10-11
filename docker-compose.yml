@@ -15,5 +15,22 @@ services:
       timeout: 5s
       retries: 10
 
+  api:
+    build: .
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [ 'CMD-SHELL', 'wget -qO- http://localhost:3000/health || exit 1' ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   pgdata:
