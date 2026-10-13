@@ -27,6 +27,7 @@ export class RegisterUserUseCase {
 
         const passwordHash = await this.passwordHasher.hash(input.password);
         const user = User.create({ email, fullName: input.fullName, passwordHash });
+        await this.users.save(user);
 
         return toUserOutput(user.toPrimitives());
     }
