@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { InvalidProductError } from "../errors/invalid-product.error.js";
+import { ProductNotAvailableError } from "../errors/product-not-available..error.js";
+import { InsufficientStockError } from "../errors/insufficient-stock.error.js";
 
 export interface ProductPrimitives {
     id: string;
@@ -54,6 +56,32 @@ export class Product {
 
     static restore(props: ProductPrimitives): Product {
         return new Product({ ...props });
+    }
+
+    decreaseStock(quantity: number): void {
+        this.assertValidQuantity(quantity);
+        if (!this.props.isActive) {
+            throw new ProductNotAvailableError(this.props.id);
+        }
+
+        if (quantity > this.props.stock) {
+            throw new InsufficientStockError(this.props.id, quantity, this.props.stock);
+        }
+
+        this.props.stock -= quantity;
+        this.props.updatedAt = new Date();
+    }
+
+    increaseStock(quantity: number): void {
+        this.assertValidQuantity(quantity);
+        this.props.stock += quantity;
+        this.props.updatedAt = new Date();
+    }
+
+    private assertValidQuantity(quantity: number): void {
+        if (!Number.isInteger(quantity) || quantity <= 0) {
+            throw new InvalidProductError('The amount must be an integer greater than 0');
+        }
     }
 
     get id(): string {

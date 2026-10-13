@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ProductRepository } from "../../../domain/repositories/product.repository.js";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { ProductOrmEntity } from "../orm-entities/product.orm-entity.js";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "../../../domain/entities/product.entity.js";
@@ -36,5 +36,15 @@ export class TypeOrmProductRepository implements ProductRepository {
             page,
             limit
         };
+    }
+
+    async findByIdsForUpdate(ids: string[]): Promise<Product[]> {
+        const rows = await this.repository.find({
+            where: { id: In([...new Set(ids)]) },
+            order: { id: 'ASC' },
+            lock: { mode: 'pessimistic_write' },
+        });
+
+        return rows.map((row) => ProductMapper.toDomain(row));
     }
 }
