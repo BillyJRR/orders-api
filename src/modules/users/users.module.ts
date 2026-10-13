@@ -7,9 +7,11 @@ import { UserRepository } from './domain/repositories/user.repository.js';
 import { UserOrmEntity } from './infrastructure/persistence/orm-entities/user.orm-entity.js';
 import { TypeOrmUserRepository } from './infrastructure/persistence/repositories/typeorm-user.repository.js';
 import { ScryptPasswordHasher } from './infrastructure/security/scrypt-password-hasher.js';
+import { UsersController } from './presentation/http/users.controller.js';
 
 @Module({
     imports: [TypeOrmModule.forFeature([UserOrmEntity])],
+    controllers: [UsersController],
     providers: [
         RegisterUserUseCase,
         GetUserUseCase,

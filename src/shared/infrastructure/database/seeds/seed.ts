@@ -1,4 +1,5 @@
 import dataSource from '../data-source.js';
+import { ScryptPasswordHasher } from '../../../../modules/users/infrastructure/security/scrypt-password-hasher.js';
 
 const products = [
     { id: 'a1111111-1111-4111-8111-111111111111', name: 'Mechanical keyboard', description: 'Red switches, Spanish layout', priceCents: 15990, stock: 25 },
@@ -17,6 +18,18 @@ async function run(): Promise<void> {
                 [product.id, product.name, product.description, product.priceCents, product.stock],
             );
         }
+
+        const adminEmail = process.env.SEED_ADMIN_EMAIL;
+        const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+        if (!adminEmail || !adminPassword) {
+            throw new Error('Define SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD in .env');
+        }
+        const passwordHash = await new ScryptPasswordHasher().hash(adminPassword);
+        await dataSource.query(
+            'INSERT INTO users (id, email, password_hash, full_name, role) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (email) DO NOTHING',
+            ['b1111111-1111-4111-8111-111111111111', adminEmail.toLowerCase(), passwordHash, 'Administrador', 'admin'],
+        );
+
         console.log(`Seed completado: ${products.length} productos`);
     } finally {
         await dataSource.destroy();

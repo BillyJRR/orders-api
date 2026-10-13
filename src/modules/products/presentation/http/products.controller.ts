@@ -1,11 +1,13 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query } from "@nestjs/common";
-import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { CreateProductUseCase } from "../../application/use-cases/create-product.use-case.js";
 import { ListProductsUseCase } from "../../application/use-cases/list-products.use-case.js";
 import { GetProductUseCase } from "../../application/use-cases/get-product.use-case.js";
 import { PaginatedProductsResponseDto, ProductResponseDto } from "./dto/product.response.dto.js";
 import { CreateProductRequestDto } from "./dto/create-product.request.dto.js";
 import { ListProductsQueryDto } from "./dto/list-products.query.dto.js";
+import { Roles } from "../../../auth/presentation/http/decorators/roles.decorator.js";
+import { Public } from "../../../auth/presentation/http/decorators/public.decorator.js";
 
 @ApiTags('products')
 @Controller('products')
@@ -16,6 +18,8 @@ export class ProductsController {
         private readonly listProducts: ListProductsUseCase,
     ) { }
 
+    @Roles('admin')
+    @ApiBearerAuth()
     @Post()
     @ApiCreatedResponse({ type: ProductResponseDto })
     async create(@Body() dto: CreateProductRequestDto): Promise<ProductResponseDto> {
@@ -29,6 +33,7 @@ export class ProductsController {
         return ProductResponseDto.from(product);
     }
 
+    @Public()
     @Get()
     @ApiOkResponse({ type: PaginatedProductsResponseDto })
     async findAll(@Query() query: ListProductsQueryDto): Promise<PaginatedProductsResponseDto> {
@@ -43,6 +48,7 @@ export class ProductsController {
         }
     }
 
+    @Public()
     @Get(':id')
     @ApiOkResponse({ type: ProductResponseDto })
     @ApiNotFoundResponse({ description: 'Product not found' })

@@ -4,6 +4,8 @@ import { envValidationSchema } from './config/env.validation.js';
 import { DatabaseModule } from './shared/infrastructure/database/database.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { ProductModule } from './modules/products/products.module.js';
+import { UsersModule } from './modules/users/users.module.js';
+import { AuthModule } from './modules/auth/auth.module.js';
 
 @Module({
   imports: [
@@ -18,7 +20,9 @@ import { ProductModule } from './modules/products/products.module.js';
     }),
     DatabaseModule,
     HealthModule,
-    ProductModule
+    ProductModule,
+    UsersModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
