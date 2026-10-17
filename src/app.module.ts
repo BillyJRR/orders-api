@@ -6,6 +6,7 @@ import { HealthModule } from './modules/health/health.module.js';
 import { ProductModule } from './modules/products/products.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { OrdersModule } from './modules/orders/orders.module.js';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { AuthModule } from './modules/auth/auth.module.js';
     HealthModule,
     ProductModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    OrdersModule
   ],
   controllers: [],
   providers: [],
