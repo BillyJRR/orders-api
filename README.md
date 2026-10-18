@@ -40,10 +40,37 @@ Ver [docs/er-diagram.md](docs/er-diagram.md).
 | `npm run seed` | Carga productos de ejemplo |
 | `npm run lint` | Valida estilo y reglas de arquitectura |
 
+## Endpoints
+
+| Método | Ruta | Acceso |
+|---|---|---|
+| POST | `/users` | Público (registro, siempre crea rol `customer`) |
+| POST | `/auth/login` | Público |
+| GET | `/users/me` | Autenticado |
+| GET | `/products`, `/products/:id` | Público |
+| POST | `/products` | Solo `admin` |
+| POST | `/orders` | Autenticado |
+| GET | `/orders`, `/orders/:id` | Autenticado (el dueño o `admin`) |
+| GET | `/health` | Público |
+
+## Decisiones de seguridad
+
+- Guard JWT global: todo requiere token salvo lo marcado como público.
+- Contraseñas con scrypt (Node `crypto`), sal aleatoria por contraseña y comparación en tiempo constante.
+- El registro no acepta el campo `role` (protección contra asignación masiva).
+- Las órdenes se crean en una transacción con bloqueo de filas para evitar sobreventa.
+
+## Limitaciones conocidas
+
+- Sin refresh tokens ni login social.
+- Sin límite de intentos de login (rate limiting).
+- El login responde más rápido cuando el email no existe (posible enumeración por tiempos).
+- Una sola moneda; no hay endpoints de pago ni cancelación todavía (las transiciones existen en el dominio).
+
 ## Roadmap
 
 - [x] Base del proyecto, datos y módulo de productos
-- [ ] Autenticación JWT, roles y órdenes
+- [x] Autenticación JWT, roles y órdenes
 - [ ] Pruebas unitarias y e2e + CI
 - [ ] Procesamiento asíncrono con SQS
 - [ ] Despliegue en AWS
